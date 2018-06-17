@@ -6,8 +6,8 @@
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-require_relative 'version'
+require_relative '../version'
 
 class Kamaze::Version
-  VERSION = self.new("#{__dir__}/version.yml").freeze
+  VERSION = self.new.freeze
 end

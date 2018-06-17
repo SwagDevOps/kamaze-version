@@ -6,15 +6,15 @@
 # This is free software: you are free to change and redistribute it.
 # There is NO WARRANTY, to the extent permitted by law.
 
-require 'yaml'
-require 'pathname'
+autoload :Pathname, 'pathname'
+autoload :Yaml, 'yaml'
 require 'dry/inflector'
 
 # rubocop:disable Style/Documentation
 
 module Kamaze
   class Version
-    autoload :VERSION, "#{__dir__}/VERSION"
+    autoload :VERSION, "#{__dir__}/version/version"
   end
 end
 
@@ -27,27 +27,26 @@ class Kamaze::Version
   # Get filepath used to parse version (YAML file).
   #
   # @return [Pathname|String]
-  attr_reader :file_name
+  attr_reader :file
 
-  # @param [String] file_name
-  def initialize(file_name)
-    @file_name = file_name.freeze
-    @data_loaded = self.load_file
-                       .map { |k, v| self.attr_set(k, v) }.to_h
+  # @param [String|Pathname|nil] file
+  def initialize(file = nil)
+    (file.nil? ? file_from(caller_locations) : file).tap do |file|
+      @file = ::Pathname.new(file).freeze
+    end
+    parse!
   end
 
-  # Denote version has enough (mninimal) attributes defined.
+  # Denote version is semantically valid
   #
   # @return [Boolean]
   def valid?
-    ![:major, :minor, :patch]
-      .map { |method| public_send(method) }
-      .map { |v| v.to_s.empty? ? nil : v }
-      .include?(nil)
-  rescue NameError
+    !!(/^([0-9]+\.){2}[0-9]+$/ =~ self.to_s)
+  rescue ::NameError
     false
   end
 
+  # @raise [NameError]
   # @return [String]
   def to_s
     [major, minor, patch].join('.')
@@ -55,7 +54,7 @@ class Kamaze::Version
 
   # @return [Hash]
   def to_h
-    data_loaded.clone.freeze
+    parsed.clone.freeze
   end
 
   # Return the path as a String.
@@ -63,29 +62,58 @@ class Kamaze::Version
   # @see https://ruby-doc.org/stdlib-2.5.0/libdoc/pathname/rdoc/Pathname.html#method-i-to_path
   # @return [String]
   def to_path
-    file_name.to_s
+    file.to_s
   end
 
   protected
 
+  # Get parsed data
+  #
   # @return [Hash]
-  attr_reader :data_loaded
+  attr_reader :parsed
 
+  # Get file automagically
+  #
+  # @param [Array] locations
+  # @return [Pathname]
+  def file_from(locations = caller_locations)
+    location = locations.first.path
+
+    Pathname.new(location).dirname.realpath.join('version.yml')
+  end
+
+  # Parse given file
+  #
+  # @param [Pathname] file
+  # @raise [Psych::DisallowedClass]
   # @return [Hash]
-  def load_file
-    YAML.load_file(file_name) || {}
+  def parse(file)
+    YAML.safe_load(file.read) || {}
   rescue Errno::ENOENT
     {}
+  end
+
+  # Parse and set attributes
+  #
+  # @return [self]
+  def parse!
+    @parsed = self.parse(self.file)
+                  .map { |k, v| self.attr_set(k, v) }
+                  .compact
+                  .to_h
+
+    self
   end
 
   # Define attribute (as ``ro`` attr) and set value.
   #
   # @param [String|Symbol] attr_name
   # @param [Object] attr_value
-  # @return [Array]
+  # @return [Array|nil]
   def attr_set(attr_name, attr_value)
-    inflector = Dry::Inflector.new
-    attr_name = inflector.underscore(attr_name.to_s)
+    attr_name = Dry::Inflector.new.underscore(attr_name.to_s)
+
+    return nil unless eligible_attr?(attr_name)
 
     self.singleton_class.class_eval do
       attr_accessor attr_name
@@ -97,5 +125,17 @@ class Kamaze::Version
     self.__send__("#{attr_name}=", attr_value.freeze)
 
     [attr_name, attr_value.freeze].freeze
+  end
+
+  # Denote given attr name is eligible (to be set)
+  #
+  # @param [String|Symbol] attr_name
+  # @return [Boolean]
+  def eligible_attr?(attr_name)
+    [attr_name, "#{attr_name}="].each do |v|
+      return false if self.respond_to?(v, true)
+    end
+
+    true
   end
 end
