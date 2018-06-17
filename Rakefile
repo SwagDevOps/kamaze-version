@@ -10,14 +10,17 @@ Kamaze.project do |project|
   project.subject = Kamaze::Version
   project.name    = 'kamaze-version'
   project.tasks   = [
-    'cs:correct', 'cs:control',
+    'cs:correct',
+    'cs:control',
     'cs:pre-commit',
-    'doc', 'doc:watch',
+    'doc',
+    'doc:watch',
     'gem',
     'misc:gitignore',
-    'shell', 'sources:license',
+    'shell',
+    'sources:license',
     'test',
-    'vagrant', 'version:edit',
+    'version:edit',
   ]
 end.load!
 
