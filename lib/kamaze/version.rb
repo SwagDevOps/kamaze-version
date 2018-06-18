@@ -49,7 +49,7 @@ class Kamaze::Version
   # @raise [NameError]
   # @return [String]
   def to_s
-    [major, minor, patch].join('.')
+    [major, minor, patch].map(&:to_i).join('.')
   end
 
   # @return [Hash]
