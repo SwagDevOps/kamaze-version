@@ -21,10 +21,7 @@ Gem::Specification.new do |s|
   s.require_paths = ['lib']
   s.files         = [
     '.yardopts',
-    '.rubocop.yml',
-    'bin/*',
     'lib/**/*.rb',
-    'lib/**/resources/**/**',
     'lib/**/version.yml'
   ].map { |m| Dir.glob(m) }.flatten
    .map { |f| File.file?(f) ? f : nil }.compact
