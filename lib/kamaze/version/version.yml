@@ -1,12 +1,13 @@
 ---
-major: 0
+major: 1
 minor: 0
-patch: 1
+patch: 0
 authors: ['Dimitri Arrigoni']
 email: 'dimitri@arrigoni.me'
-date: '2018-06-16'
+date: '2018-06-21'
 summary: 'Provide version as an object'
 description: 'Why use a simple String, when you can use an Object?'
+homepage: 'https://github.com/SwagDevOps/kamaze-version'
 licenses: ['GPL-3.0']
 license_header: |
   Copyright (C) 2017-2018 Dimitri Arrigoni <dimitri@arrigoni.me>
@@ -14,4 +15,3 @@ license_header: |
   <http://www.gnu.org/licenses/gpl.html>.
   This is free software: you are free to change and redistribute it.
   There is NO WARRANTY, to the extent permitted by law.
-homepage: 'https://github.com/SwagDevOps/kamaze-version'
