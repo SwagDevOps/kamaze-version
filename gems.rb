@@ -14,19 +14,19 @@ group :development do
   gem 'rubocop', '~> 0.74'
 end
 
-group :development, :repl do
+group :repl do
   gem 'interesting_methods', '~> 0.1'
   gem 'pry', '~> 0.12'
   gem 'pry-coolline', '~> 0.2'
 end
 
-group :development, :doc do
+group :doc do
   gem 'github-markup', '~> 3.0'
   gem 'redcarpet', '~> 3.5'
-  gem 'yard', '~> 0.9'
+  gem 'yard', '>= 0.9.20'
 end
 
-group :development, :test do
+group :test do
   gem 'rspec', '~> 3.6'
   gem 'sham', '~> 2.0'
 end
