@@ -4,8 +4,8 @@
 
 Gem::Specification.new do |s|
   s.name        = "kamaze-version"
-  s.version     = "1.0.0"
-  s.date        = "2018-06-21"
+  s.version     = "1.0.1"
+  s.date        = "2019-08-04"
   s.summary     = "Provide version as an object"
   s.description = "Why use a simple String, when you can use an Object?"
 
