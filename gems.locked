@@ -101,7 +101,7 @@ GEM
     unicode-display_width (1.6.0)
     unicode_utils (1.4.0)
     wisper (2.0.0)
-    yard (0.9.14)
+    yard (0.9.20)
 
 PLATFORMS
   ruby
@@ -119,7 +119,7 @@ DEPENDENCIES
   rubocop (~> 0.74)
   sham (~> 2.0)
   sys-proc (~> 1.1)
-  yard (~> 0.9)
+  yard (>= 0.9.20)
 
 BUNDLED WITH
-   1.16.1
+   2.0.1
